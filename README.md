@@ -10,10 +10,10 @@ Se posicionaron tres micrófonos en diferentes puntos estratégicos para captar 
 ![Sin título](https://github.com/user-attachments/assets/4a1a8b4d-fccf-4671-91f4-999c3d43366c)
 
 
-
+Debemos tener en cuenta que en nuestro caso usaos 3 fuentes de ruido, los cuales son 3 voces, cada una ubicada a una posicion diferente de cada uno de los microfonos como se muestra a continuacion:*
 
 ## Grabación simultánea:
 Las tres grabaciones se realizaron al mismo tiempo para obtener datos coherentes y comparables. Esto facilita el estudio de fenómenos acústicos como la interferencia, la reverberación y el efecto de obstáculos en el entorno.
 
-##Análisis teórico:
+## Análisis teórico:
 Basándose en principios de la acústica, se aplica el concepto de relación señal-ruido (SNR) para evaluar la pureza de la señal en cada posición, considerando la influencia del ruido ambiental. La teoría respalda cómo factores como la distancia y la dirección impactan en la calidad del audio captado.
