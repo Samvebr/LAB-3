@@ -15,6 +15,7 @@ Se posicionaron tres micrófonos en diferentes puntos estratégicos para captar 
 ![Imagen de WhatsApp 2025-02-27 a las 22 18 11_d844402c-500x500](https://github.com/user-attachments/assets/294b7dad-4f51-456e-bca9-19652293eebb)
 
 
+![AAAAAAAA-500x500](https://github.com/user-attachments/assets/d2578ed6-09b7-473c-9e88-5a67b1bd56e2)
 
 
 
