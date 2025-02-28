@@ -13,7 +13,8 @@ Se posicionaron tres micrófonos en diferentes puntos estratégicos para captar 
 *Debemos tener en cuenta que en nuestro caso se presentan 3 fuentes de ruido, los cuales son 3 voces disntintas, cada una ubicada a una posicion diferente de cada uno de los microfonos como se muestra a continuacion:*
 
 
-![Imagen de WhatsApp 2025-02-27 a las 21 26 49_1d6d9979-500x500](https://github.com/user-attachments/assets/7bfbdd2c-8273-495d-9f7a-a942d09d24b8)
+![Imagen de WhatsApp 2025-02-27 a las 21 26 49_1d6d9979-300x300](https://github.com/user-attachments/assets/08330769-55de-4074-92c3-717c01ea90bf)
+
 
 
 ## Grabación simultánea:
