@@ -12,7 +12,7 @@ Se posicionaron tres micrófonos en diferentes puntos estratégicos para captar 
 
 *Debemos tener en cuenta que en nuestro caso se presentan 3 fuentes de ruido, los cuales son 3 voces disntintas, cada una ubicada a una posicion diferente de cada uno de los microfonos como se muestra a continuacion:*
 
-![image](https://github.com/user-attachments/assets/5b466fbd-9009-4636-bba5-a9606cda69d1)
+![image](https://github.com/user-attachments/assets/5b466fbd-4000-4636-bba5-a9606cda69d1)
 
 
 ## Grabación simultánea:
