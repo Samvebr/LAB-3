@@ -156,7 +156,8 @@ Para el calculo del SNR se toma la potencia de la señal sobre la potencia del r
             snr_db = float('-inf')
 ```
 se obtienecomo resultado la siguiente imagen:
-![image](https://github.com/user-attachments/assets/0f4f9e1a-9574-40fa-9c6a-79c6a8841d3b)
+![image](https://github.com/user-attachments/assets/a1b6826a-ed01-4c83-9fb4-3bb6caf2bec0)
+
 
 En la parte izquierda de cada fila se muestra la forma de onda de la señal a lo largo del tiempo. Se observa que la señal "Samuel.wav" tiene un incremento progresivo de amplitud, lo que sugiere una mayor intensidad conforme avanza el tiempo, lo que coincide con su mayor relación SNR (16.48 dB). En "Santiago.wav", la señal presenta una mayor va-riabilidad y fluctuaciones intensas en varios puntos, indicando una voz con mayor dinámica. Por otro lado, "Salo-me.wav" tiene una estructura más estable con picos bien distribuidos, lo que sugiere una menor variabilidad en la intensidad de la voz, esto para las ultimas dos señales sugiere mayor interferencia de ruido o un volumen mas variables asociado con sus SNR mas bajos (7.57 dB y 9.24 dB) . Todas las señales están normalizadas en amplitud entre -1 y 1, lo que facilita la comparación visual.
 
