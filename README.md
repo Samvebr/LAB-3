@@ -23,8 +23,146 @@ Se posicionaron tres micrófonos en diferentes puntos estratégicos para captar 
 Las tres grabaciones se realizaron al mismo tiempo para obtener datos coherentes y comparables. Esto facilita el estudio de fenómenos acústicos como la interferencia, la reverberación y el efecto de obstáculos en el entorno.
 
 ## Análisis teórico
-Basándose en principios de la acústica, se aplica el concepto de relación señal-ruido (SNR) para evaluar la pureza de la señal en cada posición, considerando la influencia del ruido ambiental. La teoría respalda cómo factores como la distancia y la dirección impactan en la calidad del audio captado.
-## Separacion de Voz
+Basándose en principios de la acústica, se aplica el concepto de relación señal-ruido (SNR) para evaluar la pureza de la señal en cada posición, considerando la influencia del ruido ambiental. La teoría respalda cómo factores como la distancia y la dirección impactan en la calidad del audio captado. 
+Para nuestra practica tuvimos que tomar los audios dos veces puesto que el SNR daba un valor menor que cero, el la realacion señal ruido que mejor pudimos obtener fue la siguiente:
+ - SNR de Samuel.wav: 16.48 dB
+ - SNR de Santiago.wav: 7.57 dB
+ - SNR de Salome.wav: 9.24 dB
+
+Estos valores sugieren que el microfono del celular de samuel tiene mer calidad de grabacion a comparación de los microfonos del celular de santiago o salome. Tambien se puede deber a otros factores como el ruido de fondo, la intensidad de la voz grabada y la distancia al micrófono.
+
+## Analisis Temporal y Espectral de las Señales
+Las librerias que se emplean para esta parte del laboratorio son:
+  - Numpy: se usa para cálculos matemáticos y manejo de arrays
+  - Matplotlib.pyplot: se usa para graficar señales en el dominio del tiempo y frecuencia.
+  - Scipy.io.wavfile: se usa para leer archivos de audio en formato WAV.
+```bash
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.io import wavfile
+```
+Se definen en *archivos* los cuatro archivos de audio, tres son los microfonos mientras se habla y uno es el ruido de fondo de la habitacion donde se grabo.
+```bash
+archivos = ["Samuel.wav", "Santiago.wav", "Salome.wav", "Ruido_Ambiente.wav"]
+```
+El codigo procesa el archivo *"Ruido_Ambiente.wav"* para calcular su potencia, para mas adelante con este calcular el SNR de las señales de voz.
+
+```bash
+potencia_ruido = None
+try:
+    # Lee el archivo de audio de ruido
+    sample_rate_ruido, audio_ruido = wavfile.read("Ruido_Ambiente.wav")
+    
+    # Convertir a mono si el audio es estéreo (se toma solo el primer canal)
+    if len(audio_ruido.shape) > 1:
+        audio_ruido = audio_ruido[:, 0]
+    
+    # Convertir el audio a tipo float para realizar cálculos precisos
+    audio_ruido = audio_ruido.astype(np.float32)
+
+    # Calcular la potencia del ruido utilizando la media de los cuadrados de la señal
+    potencia_ruido = np.mean(audio_ruido ** 2)
+
+except FileNotFoundError:
+    print("Error: No se encontró el archivo Ruido_Ambiente.wav.")
+except ValueError:
+    print("Error: Archivo Ruido_Ambiente.wav no es un WAV válido.")
+except Exception as e:
+    print(f"Error al procesar Ruido_Ambiente.wav: {e}")
+```
+Se lee el archivo de ruido ambiente, sei el audio es estereo, se convierte a mono para tomar un solo canal, luego se convierte a float para lograr cálculos de presición y se calcula la potencia del ruido como la medida de los cuadrados de la señal.
+
+Para graficar la señal en el dominio del tiempo y de la frecuencia, primero se crea una grafica de 14x10 pulgadas para mostrar varias figuras, despues se crea un ciclo *for* para iterar sobre todos los archivos execpto el del ruido, se normaliza la señal para que sus valores esten entre el rango de (-1,1) y se genera el eje del tiempo.
+```bash
+for i, archivo in enumerate(archivos[:-1], 1):  # Excluye el archivo de ruido de la visualización
+    try:
+        # Lee el archivo de audio
+        sample_rate, audio_data = wavfile.read(archivo)
+        
+        # Convertir a mono si el audio es estéreo (se toma el primer canal)
+        if len(audio_data.shape) > 1:
+            audio_data = audio_data[:, 0]
+ # Normalizar la señal
+        audio_data_norm = audio_data / np.max(np.abs(audio_data))
+
+        # Crear eje de tiempo
+        tiempo = np.arange(len(audio_data_norm)) / sample_rate
+```
+**Grafica en el Dominio del Tiempo**
+Puesto que ya se creo el eje del tiempo anteriormente, esta se grafica en función del tiempo, se coloca en color azul y se activa la cuadricula, ademas se configura el tiulo y las etiquetas.
+```bash
+        # ========================================
+        # Gráfica en el dominio del tiempo
+        # ========================================
+        plt.subplot(3, 2, 2*i-1)  # Subplot impar para tiempo
+        plt.plot(tiempo, audio_data_norm, color='#1f77b4', alpha=0.7)
+        plt.xlabel("Tiempo (s)")
+        plt.ylabel("Amplitud")
+        plt.title(f"Señal Temporal - {archivo}")
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.xlim(0, tiempo[-1])  # Mostrar todo el rango temporal
+```
+
+**Grafica en el Dominio de la Frecuencia**
+Se calcula la transformada Rapida de Fourier (FFT) y se generan las frecuencias correspondientes, luego se obtiene la magnitud del espectro y se tomo la mitad positiva, se grafica el esprectro de frecuencias en escala logaritmica y se muestran las graficas.
+
+```bash
+        # ========================================
+        # Gráfica en el dominio de la frecuencia
+        # ========================================
+        # Calcular la FFT
+        N = len(audio_data_norm)
+        fft_data = np.fft.fft(audio_data_norm)
+        freqs = np.fft.fftfreq(N, d=1/sample_rate)
+
+        # Tomar mitad positiva del espectro
+        fft_magnitude = np.abs(fft_data[:N//2])
+        freqs = freqs[:N//2]
+
+        plt.subplot(3, 2, 2*i)  # Subplot par para frecuencia
+        plt.plot(freqs, fft_magnitude, label=f"SNR: {snr_db:.2f} dB", 
+                color='#ff7f0e', alpha=0.7)
+        plt.xlabel("Frecuencia (Hz)")
+        plt.ylabel("Magnitud")
+        plt.title(f"Espectro de Frecuencias - {archivo}")
+        plt.legend()
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.xscale("log")
+        plt.xlim(20, 10000)
+    
+    except FileNotFoundError:
+        print(f"Error: No se encontró el archivo {archivo}.")
+    except ValueError:
+        print(f"Error: Archivo {archivo} no es un WAV válido.")
+    except Exception as e:
+        print(f"Error al procesar {archivo}: {e}")
+
+# Ajustar el diseño y mostrar
+plt.tight_layout()
+plt.show()
+```
+Para el calculo del SNR se toma la potencia de la señal sobre la potencia del ruido y se incerta en la formula como se encuentra dentro del ciclo *for* lo calcula para cada una de las señales de audio y se imprime en pantalla.
+```bash
+ # Calcular la potencia de la señal utilizando la media de los cuadrados
+        potencia_senal = np.mean(audio_data ** 2)
+
+        # Calcular la relación señal-ruido (SNR)
+        if potencia_ruido is not None and potencia_ruido > 0:
+            if potencia_senal > potencia_ruido:
+                snr_db = 10 * np.log10((potencia_senal) / potencia_ruido)
+            else:
+                snr_db = float('-inf')
+        else:
+            snr_db = float('-inf')
+```
+se obtienecomo resultado la siguiente imagen:
+![image](https://github.com/user-attachments/assets/0f4f9e1a-9574-40fa-9c6a-79c6a8841d3b)
+
+En la parte izquierda de cada fila se muestra la forma de onda de la señal a lo largo del tiempo. Se observa que la señal "Samuel.wav" tiene un incremento progresivo de amplitud, lo que sugiere una mayor intensidad conforme avanza el tiempo, lo que coincide con su mayor relación SNR (16.48 dB). En "Santiago.wav", la señal presenta una mayor va-riabilidad y fluctuaciones intensas en varios puntos, indicando una voz con mayor dinámica. Por otro lado, "Salo-me.wav" tiene una estructura más estable con picos bien distribuidos, lo que sugiere una menor variabilidad en la intensidad de la voz, esto para las ultimas dos señales sugiere mayor interferencia de ruido o un volumen mas variables asociado con sus SNR mas bajos (7.57 dB y 9.24 dB) . Todas las señales están normalizadas en amplitud entre -1 y 1, lo que facilita la comparación visual.
+
+Las graficas de la derecha muestran el espectro de frecuencias de cada señal en escala logarítmica, mostrando distribucion de energia en diferentes bandas de frecuencia. En "Samuel.wav", se observa un pico dominante por denajo de los 100Hz y energia sitribuida hasta los 1000Hz, lo que es caracteristico de la voz. En "Santiago.wav" muestra un espectro mas complejo con multiples picos, lo que indica la presencia de más armonicos y una sñal mas rica en frecuencias. Y en "Salome.wav" se exhibe varios picos pronunciados con energia distribuida de manera mas homogénea, sugiriendo una voz con una estructura espectral bien definida. 
+
+## Separación de Voz
 La separacion de la voz se designo por el metodo de Análisis de Componentes Independientes (ICA),para este metodo se utilizaron las librerias:
 - Numpy: Manejo de arreglos numericos
 - Matplotlib: Graficar señales 
@@ -139,6 +277,28 @@ for i in range(len(archivos)):
 plt.tight_layout()
 plt.show()
 ```
-![image](https://github.com/user-attachments/assets/433e862e-8ced-447f-8f28-12c01608fcad)
+![image](https://github.com/user-attachments/assets/32dadc5d-c78b-4f0c-b991-e4f3bf471381)
+
 
 Como se observa en la imagen se separan las tres señales encontradas en el archivo de audio y en rojo se resalta la voz predominante mientras que en gris se ponen las voces menos predominantes.
+
+Para calcular el SNR se definio *senal_original* como la suma de todas las señales de entrada, luego se estimo el ruido como la diferencia entre la señal original y la señal limpia separada y se calcula el SNR y se muestra en pantalla.
+```bash
+# Calcular la señal de ruido como la diferencia entre la señal original combinada y la señal limpia
+senal_original = np.sum(audio_signals, axis=0)  # Señal original combinada
+ruido = senal_original - voz_filtrada  # Ruido estimado
+
+# Cálculo del SNR
+potencia_senal = np.sum(voz_filtrada**2)
+potencia_ruido = np.sum(ruido**2)
+SNR = 10 * np.log10(potencia_senal / potencia_ruido)
+print(f" SNR de la señal predominante: {SNR:.2f} dB")
+```
+Da un SNR de 10.57 dB lo que quiere decir que el audio obtenido es de calidad baja, puede ser comprensible pero con ruido molesto.
+
+## Bibliografía
+“9. Ruido y dB | PySDR: A Guide to SDR and DSP using Python”. PySDR: A Guide to SDR and DSP using Python. Accedido el 1 de marzo de 2025. [En línea]. Disponible: https://pysdr.org/es/content-es/noise.html
+
+“Python: How to separate out noise from human speech in audio file?” Stack Overflow. Accedido el 1 de marzo de 2025. [En línea]. Disponible: https://stackoverflow.com/questions/58054927/python-how-to-separate-out-noise-from-human-speech-in-audio-file
+
+“MANIPULANDO AUDIOS EN PYTHON, CON «pydub».” El Programador Chapuzas. Accedido el 1 de marzo de 2025. [En línea]. Disponible: https://programacionpython80889555.wordpress.com/2020/02/25/manipulando-audios-en-python-con-pydub/
